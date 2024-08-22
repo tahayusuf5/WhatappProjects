@@ -31,7 +31,7 @@ module.exports = {
                     msg.client.sendMessage(chatId, webp, { 
                         sendMediaAsSticker: true,
                         stickerAuthor: 'Made by: WhatsIc3zy\nCoded by: Ic3zy',
-                        stickerName: 'StickerArchive'
+                        stickerName: 'Ic3zy Archive'
                     })
                         .then(() => {
                             console.log('Sticker başarıyla gönderildi!');
