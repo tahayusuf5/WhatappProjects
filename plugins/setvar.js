@@ -4,7 +4,7 @@ const configPath = path.join(__dirname, '..' ,'config.js');
 const debug = config.debug;
 module.exports = {
    async onMessage(msg) {
-        if (msg.body.trim().startsWith(`${prefix}setvar_sudo`) || msg.body.trim().startsWith(`${prefix}setvar_worktype`) || msg.body.trim().startsWith(`${prefix}setvar_prefix`) || msg.body.trim().startsWith(`${prefix}setvar_alivemsg`) ||  msg.body.trim().startsWith(`${prefix}setvar_kickmemsg`)) {
+        if (msg.body.trim().startsWith(`${prefix}setvar_sudo`) || msg.body.trim().startsWith(`${prefix}setvar_worktype`) || msg.body.trim().startsWith(`${prefix}setvar_prefix`) || msg.body.trim().startsWith(`${prefix}setvar_alivemsg`) ||  msg.body.trim().startsWith(`${prefix}setvar_kickmemsg`) || msg.body.trim().startsWith(`${prefix}reload`)) {
             const botid = msg.client.info.wid._serialized;
             const msgId = msg.from;
             const chat = await msg.getChat();
@@ -127,6 +127,13 @@ module.exports = {
                     } else {
                         msg.client.sendMessage(chatId, 'yanlış argüman!')
                     }
+                }
+            } else if (msg.body.trim().startsWith(`${prefix}reload`)) {
+                if (onay) {
+                    const chat = await msg.getChat();
+                    const chatId = chat.id._serialized;
+                    msg.client.sendMessage(chatId ,'Bot yeniden başlatılıyor lütfen bekleyiniz')
+                    reloadConfigAndPlugins();
                 }
             }
         }
