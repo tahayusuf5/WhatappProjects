@@ -115,8 +115,8 @@ module.exports = {
                             const stickerMedia = MessageMedia.fromFilePath(filePath);
                             await msg.client.sendMessage(chatId, stickerMedia, { 
                                 sendMediaAsSticker: true,
-                                stickerAuthor: 'Made by: WhatsAsena\nCoded by: Ic3zy',
-                                stickerName: 'ASENA'
+                                stickerAuthor: 'Made by: WhatsIc3zy\nCoded by: Ic3zy',
+                                stickerName: 'IC3ZY ARCHİVES'
                             });
                             handleFileDeletion(filePath);
                         }
@@ -182,8 +182,8 @@ module.exports = {
                                 const stickerMedia = MessageMedia.fromFilePath(filePath);
                                 await msg.client.sendMessage(chatId, stickerMedia, { 
                                     sendMediaAsSticker: true,
-                                    stickerAuthor: 'Made by: WhatsAsena\nCoded by: Ic3zy',
-                                    stickerName: 'ASENA'
+                                    stickerAuthor: 'Made by: WhatsIc3zy\nCoded by: Ic3zy',
+                                    stickerName: 'IC3ZY ARCHİVES'
                                 });
                                 handleFileDeletion(filePath);
                             }
