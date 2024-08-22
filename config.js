@@ -20,6 +20,14 @@ module.exports = {
         { name: 'sticker', description: 'Yanıt verilen medyayı sticker yapar.' },
         { name: 'videosticker', description: 'Yanıt verilen hareketli stickeri video yapar.' },
         { name: 'imagesticker', description: 'Yanıt verilen hareketsiz stickeri resim yapar.'},
-        { name: 'pp', description: 'Yanıt verdiğiniz medyayı profil fotoğrafınız olarak günceller' }
+        { name: 'pp', description: 'Yanıt verdiğiniz medyayı profil fotoğrafınız olarak günceller' },
+        { name: 'setvar_sudo', description: `Sudo'ları değiştirmek için kullanılır. Örnek: .setvar_sudo '905510310485@c.us','90512345678@c.us'` },
+        { name: 'setvar_alivemsg', description: 'Alive mesajını değiştirmek için kullanabilirsiniz.' },
+        { name: 'setvar_kickmemsg', description: 'Kickme mesajınızı değiştirmenizi sağlar.' },
+        { name: 'setvar_worktype', description: 'Worktype değiştirmenizi sağlar örn: setvar_worktype private // veya public olarak değiştirebilirsiniz.' },
+        { name: 'setvar_prefix', description: 'Prefixinizi güncellemenizi sağlar. örn: .setvar_prefix !' },
+        { name: 'update', description: 'Bota update gelip gelmediğini kontrol eder.' },
+        { name: 'update now', description: 'Eğer update gelmiş ise updte etmek için kullanılır.' },
+        { name: 'afk', description: 'Sizi afk yapar. Afk yazdıktan sonra argüman vermez iseniz main afk mesajını kullanacaktır. Örnek: .afk Şu anda afkyım // yada .afk' }
     ]
 };
