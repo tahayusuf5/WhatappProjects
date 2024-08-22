@@ -1,4 +1,6 @@
+require('dotenv').config();
 module.exports = {
+    Ic3zyApi: process.env.Ic3zyApi ,
     worktype: 'private', // public || private
     prefix: '.',
     aliveMessage: `Tanrı Türk'ü Korusun. 🐺 Asena Hizmetinde!\n\n*Version:* 0.0.2 Public Beta\n*Branch:* Beta\n*Telegram Group:* https://t.me/AsenaSupport\n*Telegram Channel:* https://t.me/asenaremaster`,

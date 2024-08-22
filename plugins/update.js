@@ -8,6 +8,8 @@ module.exports = {
         if (msg.body.trim().toLowerCase() === `${prefix}update`) {
             const BotId = msg.client.info.wid._serialized;
             const msgId = msg.from;
+            const chat = await msg.getChat();
+            const chatId = chat.id._serialized;
             let sudo = false;
             let onay = false;
 
@@ -27,17 +29,19 @@ module.exports = {
                 const commits = await git.log(['master..origin/master']);
                 
                 if (commits.total === 0) {
-                    await msg.client.sendMessage(msg.from, 'Bot is already up to date.', { quoted: msg });
+                    await msg.client.sendMessage(chatId, 'Bot zaten güncel.', { quoted: msg });
                 } else {
-                    let changelog = 'New updates available:\n';
+                    let changelog = 'Yeni update yüklenebilir.:\n';
                     commits.all.forEach(commit => {
                         changelog += `▫️ [${commit.date.substring(0, 10)}]: ${commit.message} <${commit.author_name}>\n`;
                     });
 
-                    await msg.client.sendMessage(msg.from, changelog, { quoted: msg });
+                    await msg.client.sendMessage(chatId, changelog, { quoted: msg });
                 }
             }
         } else if (msg.body.trim().toLowerCase() === `${prefix}update now`) {
+            const chat = await msg.getChat();
+            const chatId = chat.id._serialized;
             const BotId = msg.client.info.wid._serialized;
             const msgId = msg.from;
             let sudo = false;
@@ -59,21 +63,21 @@ module.exports = {
                 const commits = await git.log(['master..origin/master']);
                 
                 if (commits.total === 0) {
-                    await msg.client.sendMessage(msg.from, 'Bot is already up to date.', { quoted: msg });
+                    await msg.client.sendMessage(chatId, 'Bot zaten güncel', { quoted: msg });
                 } else {
-                    const updateMessage = await msg.client.sendMessage(msg.from, 'Updating bot, please wait...', { quoted: msg });
+                    const updateMessage = await msg.client.sendMessage(chatId, 'Updating bot, lütfen bekleyin...', { quoted: msg });
                     
                     git.pull('origin', 'master', async (err, update) => {
                         if (update && update.summary.changes) {
-                            await msg.client.sendMessage(msg.from, 'Bot has been updated successfully.', { quoted: msg });
+                            await msg.client.sendMessage(chatId, 'Update başarı ile tamamlandı', { quoted: msg });
                             exec('npm install', (error, stdout, stderr) => {
                                 if (error) {
-                                    return msg.client.sendMessage(msg.from, `Update failed with error: ${error.message}`, { quoted: msg });
+                                    return msg.client.sendMessage(chatId, `Update hata verdi: ${error.message}`, { quoted: msg });
                                 }
-                                msg.client.sendMessage(msg.from, 'Dependencies have been updated.', { quoted: msg });
+                                msg.client.sendMessage(chatId, 'Bot güncellendi.', { quoted: msg });
                             });
                         } else if (err) {
-                            await msg.client.sendMessage(msg.from, `Update failed: ${err.message}`, { quoted: msg });
+                            await msg.client.sendMessage(chatId, `Update Hata verdi: ${err.message}`, { quoted: msg });
                         }
                     });
 
