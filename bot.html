@@ -3,14 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Bot Control Panel</title>
+    <title>QR Kodu</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url("assets/arkaplan.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        img {
+            width: 300px; /* QR kodunun boyutu */
+            height: 300px;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
-    <h1>WhatsApp Bot Control Panel</h1>
-    <img src="qr.png" alt="QR Code" style="width:200px;height:200px;">
-    <form action="/command" method="POST">
-        <input type="text" name="command" placeholder="Enter command (e.g., /exit, /reload)">
-        <button type="submit">Send Command</button>
-    </form>
+    <div class="container">
+        <h1>QR Kodunuzu Tarayın</h1>
+        <img id="qr-image" src="/qr.png" alt="QR Code">
+    </div>
+
+    <script>
+        function updateQRCode() {
+            fetch('/qr-update')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.updated) {
+                        const qrImage = document.getElementById('qr-image');
+                        qrImage.src = '/qr.png?' + new Date().getTime(); // Cache'i temizlemek için zaman damgası ekle
+                    }
+                })
+                .catch(error => console.error('QR kodu güncellenemedi:', error));
+        }
+
+        setInterval(updateQRCode, 3000); // Her 3 saniyede bir QR kodunu kontrol et
+    </script>
 </body>
 </html>

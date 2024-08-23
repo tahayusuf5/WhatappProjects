@@ -26,7 +26,7 @@ module.exports = {
 
             if (onay) {
                 await git.fetch();
-                const commits = await git.log(['master..origin/Koyeb-Deploy']);
+                const commits = await git.log(['master..origin/master']);
                 
                 if (commits.total === 0) {
                     await msg.client.sendMessage(chatId, 'Bot zaten güncel.', { quoted: msg });
@@ -60,7 +60,7 @@ module.exports = {
 
             if (onay) {
                 await git.fetch();
-                const commits = await git.log(['master..origin/Koyeb-Deploy']);
+                const commits = await git.log(['master..origin/master']);
                 
                 if (commits.total === 0) {
                     await msg.client.sendMessage(chatId, 'Bot zaten güncel', { quoted: msg });

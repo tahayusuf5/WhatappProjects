@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Web Bot - Giriş Yap</title>
+    <title>WhatsApp Web Bot - Kayıt Ol</title>
     <style>
         body {
             margin: 0;
@@ -73,7 +73,7 @@
             width: 100%; /* Formun genişliği */
         }
 
-        input[type="text"], input[type="password"], button[type="submit"], button[class="register-button"] {
+        input[type="text"], input[type="password"], button[type="submit"], button[class="login-button"] {
             color: aqua;
             background-color: rgba(0, 0, 0, 0.1);
             border: 2px solid aqua;
@@ -89,11 +89,9 @@
         button[type="submit"] {
             width: 60%;
         }
-
-        button[class="register-button"] {
+        button[class="login-button"] {
             width: 40%;
         }
-
         .text{
             font-size: 36px; 
             color: aqua;
@@ -103,8 +101,7 @@
                 1px -1px 0 rgba(0, 0, 0, 0.8), /* Sağ-üst gölge */
                 -1px 1px 0 rgba(0, 0, 0, 0.8); /* Sol-alt gölge */
         }
-
-        .register-button {
+        .login-button {
             background-color: #00aaff; /* Buton arka plan rengi */
             color: white; /* Metin rengi */
             border: none; /* Kenarlık yok */
@@ -115,64 +112,33 @@
             transition: background-color 0.3s, transform 0.2s; /* Geçiş efektleri */
         }
 
-        .register-button:hover {
+        .login-button:hover {
             background-color: #0088cc; /* Hover efekti arka plan rengi */
         }
 
-        .register-button:active {
+        .login-button:active {
             transform: scale(0.98); /* Tıklama efekti */
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text">Giriş Yap</h1>
+        <h1 class="text">Kayıt Ol</h1>
         <div class="input-container">
-            <form id="loginForm" action="/login" method="POST">
+            <form action="/register" method="POST">
                 <label for="username"></label>
                 <input type="text" placeholder="Kullanıcı Adınız" id="username" name="username" required>
                 <label for="password"></label>
                 <input type="password" placeholder="Şifre" id="password" name="password" required>
-                <button type="submit">Giriş Yap</button>
-                <button type="button" class="register-button" onclick="redirectToRegister()">Kayıt Ol</button>
+                <button type="submit">Kayıt Ol</button>
+                <button class="login-button" onclick="redirectToLogin()">Giriş Yap</button>
+                <script>
+                    function redirectToLogin() {
+                        window.location.href = 'index.html'; // Giriş sayfasına yönlendirilme
+                    }
+                </script>
             </form>
         </div>
     </div>
-
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Formun normal şekilde gönderilmesini engelle
-
-            // Form verilerini al
-            const formData = new FormData(this);
-
-            // Verileri POST isteği ile gönder
-            fetch('/login', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Başarılıysa /start sayfasına yönlendir
-                    window.location.href = '/start';
-                } else {
-                    // Hata varsa hata mesajını al
-                    return response.text();
-                }
-            })
-            .then(errorMessage => {
-                if (errorMessage) {
-                    alert(errorMessage); // Hata mesajını göster
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-
-        function redirectToRegister() {
-            window.location.href = 'register.html'; // Kayıt sayfasına yönlendirilme
-        }
-    </script>
 </body>
 </html>
