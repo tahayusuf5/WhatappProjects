@@ -4,6 +4,7 @@ module.exports = {
     async onMessage(msg) {
         if (msg.body.trim().toLowerCase() === `${config.prefix}asena`) {
             let BotId = msg.client.info.wid._serialized;
+            let botid = msg.client.info.wid._serialized;
             var msgId = undefined;
             const chat = await msg.getChat();
             const chatId = chat.id._serialized;
