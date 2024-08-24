@@ -6,6 +6,8 @@ module.exports = {
     botNumber: `905510310485@c.us`,
     kickmeMessage: `Elveda ben kaçar.`, // Kickme mesajıdır.
     debug: true, // Geliştiricilere özeldir. true || false
+    chromepath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe', // bilgisayarınızda chrome kurulu değil ise boş bırakınız.
+    headless: false, // false ise client görünür mod da açılır. false || true
     plugins: [ 
         { name: 'add', description: 'Gruba Kişi eklemenizi sağlar örn: .add 905510310485' },
         { name: 'alive', description: 'Botun çalışıp çalışmadığını kontrol eder.' },
