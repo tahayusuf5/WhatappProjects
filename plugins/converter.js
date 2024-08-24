@@ -7,7 +7,7 @@ const debug = config.debug
 module.exports = {
     name: 'convert',
     async onMessage(msg) {
-        if (msg.body.trim().toLowerCase() === ${prefix}videosticker) {
+        if (msg.body.trim().toLowerCase() === `${prefix}videosticker`) {
             if (worktype === 'public') {
                 const chat = await msg.getChat();
                 const chatId = chat.id._serialized;
@@ -29,21 +29,21 @@ module.exports = {
                     const inputFilePath = path.join(__dirname, 'temp', fileName);
                     require('fs').writeFileSync(inputFilePath, media.data, 'base64');
                     const pythonScript = path.join(__dirname, '..', 'convert.py');
-                    const command = python "${pythonScript}" "${inputFilePath}";
+                    const command = `python "${pythonScript}" "${inputFilePath}"`;
                     exec(command, (error, stdout, stderr) => {
                         if (debug) {
-                            console.log(stdout: ${stdout});
-                            console.error(stderr: ${stderr});
+                            console.log(`stdout: ${stdout}`);
+                            console.error(`stderr: ${stderr}`);
                         }
                         if (error) {
                             if (debug) {
-                                console.error(Error: ${error});
+                                console.error(`Error: ${error}`);
                             }
                             return msg.reply('Dönüştürme sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
                         }
-                        const fixedFilePath = path.join(__dirname, 'temp', 'converted.mp4');
+                        const fixedFilePath = path.join(__dirname, 'temp', ';converted.mp4');
                         if (debug) {
-                            console.log(Checking if file exists at: ${fixedFilePath});
+                            console.log(`Checking if file exists at: ${fixedFilePath}`);
                         }
                         if (!require('fs').existsSync(fixedFilePath)) {
                             if (debug) {
@@ -52,7 +52,7 @@ module.exports = {
                             require('fs').readdir(path.dirname(fixedFilePath), (err, files) => {
                                 if (err) {
                                     if (debug) {
-                                        console.error(Error reading directory: ${err});
+                                        console.error(`Error reading directory: ${err}`);
                                     }
                                 } else {
                                     if (debug) {
@@ -60,11 +60,11 @@ module.exports = {
                                     }
                                 }
                             });
-                            msg.client.sendMessage(chatId, 'Dönüştürme tamamlanamadı.');
+                            msg.client(chatId, 'Dönüştürme tamamlanamadı.');
                         }
                         try {
                             const msgmedia = MessageMedia.fromFilePath(fixedFilePath);
-                            msg.client.sendMessage(chatId, msgmedia, { caption: 'Madeby: WhatsAsena' });
+                            msg.client.sendMessage(chatId, msgmedia, { caption: '*Madeby: WhatsAsena*' });
                             require('fs').unlinkSync(fixedFilePath); 
                             require('fs').unlinkSync(inputFilePath); 
                         }
@@ -110,21 +110,21 @@ module.exports = {
                         const inputFilePath = path.join(__dirname, 'temp', fileName);
                         require('fs').writeFileSync(inputFilePath, media.data, 'base64');
                         const pythonScript = path.join(__dirname, '..', 'convert.py');
-                        const command = python "${pythonScript}" "${inputFilePath}";
+                        const command = `python "${pythonScript}" "${inputFilePath}"`;
                         exec(command, (error, stdout, stderr) => {
                             if (debug) {
-                                console.log(stdout: ${stdout});
-                                console.error(stderr: ${stderr});
+                                console.log(`stdout: ${stdout}`);
+                                console.error(`stderr: ${stderr}`);
                             }
                             if (error) {
                                 if (debug) {
-                                    console.error(Error: ${error});
+                                    console.error(`Error: ${error}`);
                                 }
                                 return msg.reply('Dönüştürme sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
                             }
-                            const fixedFilePath = path.join(__dirname, 'temp', 'converted.mp4');
+                            const fixedFilePath = path.join(__dirname, 'temp', ';converted.mp4');
                             if (debug) {
-                                console.log(Checking if file exists at: ${fixedFilePath});
+                                console.log(`Checking if file exists at: ${fixedFilePath}`);
                             }
                             if (!require('fs').existsSync(fixedFilePath)) {
                                 if (debug) {
@@ -133,7 +133,7 @@ module.exports = {
                                 require('fs').readdir(path.dirname(fixedFilePath), (err, files) => {
                                     if (err) {
                                         if (debug) {
-                                            console.error(Error reading directory: ${err});
+                                            console.error(`Error reading directory: ${err}`);
                                         }
                                     } else {
                                         if (debug) {
@@ -141,11 +141,11 @@ module.exports = {
                                         }
                                     }
                                 });
-                                msg.client.sendMessage(chatId, 'Dönüştürme tamamlanamadı.');
+                                msg.client(chatId, 'Dönüştürme tamamlanamadı.');
                             }
                             try {
                                 const msgmedia = MessageMedia.fromFilePath(fixedFilePath);
-                                msg.client.sendMessage(chatId, msgmedia, { caption: 'Madeby: WhatsAsena' });
+                                msg.client.sendMessage(chatId, msgmedia, { caption: '*Madeby: WhatsAsena*' });
                                 require('fs').unlinkSync(fixedFilePath); 
                                 require('fs').unlinkSync(inputFilePath); 
                             }
@@ -156,7 +156,7 @@ module.exports = {
                     }
                 }
             }
-        } else if (msg.body.trim() === ${config.prefix}imagesticker) {
+        } else if (msg.body.trim() === `${config.prefix}imagesticker`) {
             if (worktype === 'public') {
                 const chatId = msg.to;
                 msg.client.sendMessage(chatId, "dönüştürme işlemi başladı...")
@@ -177,21 +177,21 @@ module.exports = {
                     const inputFilePath = path.join(__dirname, 'temp', fileName);
                     require('fs').writeFileSync(inputFilePath, media.data, 'base64');
                     const pythonScript = path.join(__dirname, '..', 'convert.py');
-                    const command = python "${pythonScript}" "${inputFilePath}";
+                    const command = `python "${pythonScript}" "${inputFilePath}"`;
                     exec(command, (error, stdout, stderr) => {
                         if (debug) {
-                            console.log(stdout: ${stdout});
-                            console.error(stderr: ${stderr});
+                            console.log(`stdout: ${stdout}`);
+                            console.error(`stderr: ${stderr}`);
                         }
                         if (error) {
                             if (debug) {
-                                console.error(Error: ${error});
+                                console.error(`Error: ${error}`);
                             }
                             return msg.reply('Dönüştürme sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
                         }
-                        const fixedFilePath = 'C:\\Users\\abdullah\\Desktop\\topmasaustu\\Yeni klasör (3)\\plugins\\temp\\convert.png';
+                        const fixedFilePath = path.join(__dirname, 'temp', 'convert.png');
                         if (debug) {
-                            console.log(Checking if file exists at: ${fixedFilePath});
+                            console.log(`Checking if file exists at: ${fixedFilePath}`);
                         }
                         if (!require('fs').existsSync(fixedFilePath)) {
                             if (debug) {
@@ -200,7 +200,7 @@ module.exports = {
                             require('fs').readdir(path.dirname(fixedFilePath), (err, files) => {
                                 if (err) {
                                     if (debug) {
-                                        console.error(Error reading directory: ${err});
+                                        console.error(`Error reading directory: ${err}`);
                                     }
                                 } else {
                                     if (debug) {
@@ -212,7 +212,7 @@ module.exports = {
                         }
                         try {
                             const msgmedia = MessageMedia.fromFilePath(fixedFilePath);
-                            msg.client.sendMessage(chatId, msgmedia, { caption: 'Madeby: WhatsAsena' });
+                            msg.client.sendMessage(chatId, msgmedia, { caption: '*Madeby: WhatsAsena*' });
                             require('fs').unlinkSync(fixedFilePath);
                             require('fs').unlinkSync(inputFilePath);
                         }
@@ -260,21 +260,21 @@ module.exports = {
                         const inputFilePath = path.join(__dirname, 'temp', fileName);
                         require('fs').writeFileSync(inputFilePath, media.data, 'base64');
                         const pythonScript = path.join(__dirname, '..', 'convert.py');
-                        const command = python "${pythonScript}" "${inputFilePath}";
+                        const command = `python "${pythonScript}" "${inputFilePath}"`;
                         exec(command, (error, stdout, stderr) => {
                             if (debug) {
-                                console.log(stdout: ${stdout});
-                                console.error(stderr: ${stderr});
+                                console.log(`stdout: ${stdout}`);
+                                console.error(`stderr: ${stderr}`);
                             }
                             if (error) {
                                 if (debug) {
-                                    console.error(Error: ${error});
+                                    console.error(`Error: ${error}`);
                                 }
                                 return msg.reply('Dönüştürme sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
                             }
-                            const fixedFilePath = 'C:\\Users\\abdullah\\Desktop\\topmasaustu\\Yeni klasör (3)\\plugins\\temp\\convert.png';
+                            const fixedFilePath = path.join(__dirname, 'temp', 'convert.png');
                             if (debug) {
-                                console.log(Checking if file exists at: ${fixedFilePath});
+                                console.log(`Checking if file exists at: ${fixedFilePath}`);
                             }
                             if (!require('fs').existsSync(fixedFilePath)) {
                                 if (debug) {
@@ -283,7 +283,7 @@ module.exports = {
                                 require('fs').readdir(path.dirname(fixedFilePath), (err, files) => {
                                     if (err) {
                                         if (debug) {
-                                            console.error(Error reading directory: ${err});
+                                            console.error(`Error reading directory: ${err}`);
                                         }
                                     } else {
                                         if (debug) {
@@ -295,7 +295,7 @@ module.exports = {
                             }
                             try {
                                 const msgmedia = MessageMedia.fromFilePath(fixedFilePath);
-                                msg.client.sendMessage(chatId, msgmedia, { caption: 'Madeby: WhatsAsena' });
+                                msg.client.sendMessage(chatId, msgmedia, { caption: '*Madeby: WhatsAsena*' });
                                 require('fs').unlinkSync(fixedFilePath);
                                 require('fs').unlinkSync(inputFilePath);
                             }
