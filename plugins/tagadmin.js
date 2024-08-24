@@ -1,62 +1,46 @@
+const config = require('./config'); // Yapılandırma dosyasını yükleyin
+const { prefix, worktype, debug } = config;
 
 module.exports = {
     name: 'tagadmin',
     async onMessage(msg) {
+        // Komut kontrolü
         if (msg.body.trim().toLowerCase() === `${prefix}tagadmin`) {
-            const BotId = msg.client.info.wid._serialized;
-            const msgId = msg.from;
+            if (worktype === 'public') {
+                const chat = await msg.getChat();
+                const chatId = chat.id._serialized;
 
-            if (config.debug) {
-                console.log(`Message from: ${msgId}`);
-            }
+                // Grubun yöneticilerini kontrol et
+                if (chat.isGroup) {
+                    const participants = chat.participants;
+                    let message = '';
+                    let mentions = [];
 
-            let sudo = false;
-            let onay = false;
+                    // Yöneticileri etiketle
+                    for (let i = 0; i < participants.length; i++) {
+                        const participant = participants[i];
+                        if (participant.isAdmin) {
+                            const contactId = participant.id._serialized;
+                            message += `• @${participant.id.user}`;
+                            if (i < participants.length - 1) {
+                                message += '\n'; 
+                            }
 
-            for (const i of sudoUsers) {
-                if (i === msgId) {
-                    sudo = true;
-                    onay = true;
-                    break;
-                }
-            }
-
-            if (!onay && msgId === BotId) {
-                onay = true;
-            }
-
-            if (config.debug) {
-                console.log(`Onay: ${onay}`);
-            }
-
-            const chat = await msg.getChat();
-            const chatId = chat.id._serialized;
-
-            if (chat.isGroup) {
-                try {
-                    const participants = await chat.getParticipants();
-                    const admins = participants.filter(participant => participant.isAdmin);
-
-                    let mentions = admins.map(admin => admin.id._serialized);
-                    mentions = mentions.length > 0 ? mentions : [msgId]; 
-                    
-                    await msg.client.sendMessage(chatId, config.tagMessage, {
-                        mentions: mentions
-                    });
-
-                    if (config.debug) {
-                        console.log('Adminler etiketlendi.');
+                            mentions.push(await msg.client.getContactById(contactId));
+                        }
                     }
-                } catch (error) {
-                    if (config.debug) {
-                        console.error('Adminleri alırken bir hata oluştu:', error);
+
+                    if (mentions.length > 0) {
+                        // Yöneticileri etiketleyerek mesaj gönder
+                        await msg.client.sendMessage(chatId, message, {
+                            mentions: mentions
+                        });
+                    } else {
+                        await msg.client.sendMessage(chatId, 'Bu grup içinde admin bulunmuyor.');
                     }
+                } else {
+                    await msg.client.sendMessage(msg.from, 'Bu komutu kullanabilmeniz için grup sohbetinde olmanız gerekmektedir.');
                 }
-            } else {
-                if (config.debug) {
-                    console.log('Bu komut yalnızca grup sohbetlerinde çalışır.');
-                }
-                await msg.reply('Bu komut yalnızca grup sohbetlerinde çalışır.');
             }
         }
     }
