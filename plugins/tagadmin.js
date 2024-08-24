@@ -1,16 +1,18 @@
 module.exports = {
     name: 'tagadmin',
     async onMessage(msg) {
-        if (msg.body.trim().startsWith(`{prefix}tagadmin`)) {
+        const command = `${config.prefix}tagadmin`;
+        if (msg.body.startsWith(command)) {
             const chat = await msg.getChat();
             const chatId = chat.id._serialized;
             if (chat.isGroup) {
                 const participants = chat.participants;
-                const messageContent = msg.body.replace(command, '').trim();
+                const messageContent = msg.body.replace(command, '').trim(); 
                 let message = '';
                 let mentions = [];
 
                 const admins = participants.filter(participant => participant.isAdmin);
+
                 if (messageContent) {
                     for (let i = 0; i < admins.length; i++) {
                         const admin = admins[i];
@@ -19,6 +21,7 @@ module.exports = {
                         message += `@${admin.id.user}\n`;
                         mentions.push(await msg.client.getContactById(contactId));
                     }
+
                     await msg.client.sendMessage(chatId, messageContent, {
                         mentions: mentions
                     });
@@ -30,6 +33,7 @@ module.exports = {
                         message += `@${admin.id.user}\n`;
                         mentions.push(await msg.client.getContactById(contactId));
                     }
+
                     await msg.client.sendMessage(chatId, message, {
                         mentions: mentions
                     });
