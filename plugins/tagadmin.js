@@ -1,8 +1,9 @@
 module.exports = {
     name: 'tagadmin',
     async onMessage(msg) {
-        // Komut kontrolü
-        if (msg.body.trim().toLowerCase() === `${prefix}tagadmin`) {
+        const [command, ...textArray] = msg.body.trim().split('\n');
+        const text = textArray.join('\n').trim();
+        if (command.toLowerCase() === `${prefix}tagadmin`) {
             if (worktype === 'public') {
                 const chat = await msg.getChat();
                 const chatId = chat.id._serialized;
@@ -10,7 +11,6 @@ module.exports = {
                     const participants = chat.participants;
                     let message = '';
                     let mentions = [];
-
                     for (let i = 0; i < participants.length; i++) {
                         const participant = participants[i];
                         if (participant.isAdmin) {
@@ -19,13 +19,16 @@ module.exports = {
                             if (i < participants.length - 1) {
                                 message += '\n'; 
                             }
-
                             mentions.push(await msg.client.getContactById(contactId));
                         }
                     }
 
                     if (mentions.length > 0) {
-                        await msg.client.sendMessage(chatId, message, {
+                        let invisibleText = '⠀'; 
+                        if (text) {
+                            message = `${text}\n\n${message}`; 
+                        }
+                        await msg.client.sendMessage(chatId, invisibleText + message, {
                             mentions: mentions
                         });
                     } else {
