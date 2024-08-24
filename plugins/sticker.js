@@ -125,13 +125,22 @@ module.exports = {
                     console.error('Error handling media:', error);
                 }
             } else if (worktype === 'private') {
+                let BotId = msg.client.info.wid._serialized;
                 const botid = msg.client.info.wid._serialized;
-                const msgId = msg.from;
+                var msgId = undefined;
+                const chat = await msg.getChat();
+                const chatId = chat.id._serialized;
+                if (chat.isGroup) {
+                    var msgId = msg.id.participant;
+                }
+                else {
+                    var msgId = msg.from;
+                }
                 if (debug) {
                     console.log(msgId);
                 }
-                var sudo = false;
-                var onay = false;
+                let sudo = false;
+                let onay = false;
                 for (const i of config.sudoUsers) {
                     if (i === msgId) {
                         sudo = true;
@@ -145,7 +154,6 @@ module.exports = {
                 if (debug) {
                     console.log(onay);
                 }
-                const chatId = chat.id._serialized;
                 if (onay) {
                     msg.client.sendMessage(chatId, "dönüştürme işlemi başladı...");
                     try {

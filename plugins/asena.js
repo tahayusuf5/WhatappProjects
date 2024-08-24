@@ -1,25 +1,37 @@
+const debug = config.debug;
 module.exports = {
     name: 'asena',
     async onMessage(msg) {
         if (msg.body.trim().toLowerCase() === `${config.prefix}asena`) {
             let BotId = msg.client.info.wid._serialized;
-            const msgId = msg.from;
-            var sudo = false;
-            var onay = false;
+            var msgId = undefined;
+            const chat = await msg.getChat();
+            const chatId = chat.id._serialized;
+            if (chat.isGroup) {
+                var msgId = msg.id.participant;
+            }
+            else {
+                var msgId = msg.from;
+            }
+            if (debug) {
+                console.log(msgId);
+            }
+            let sudo = false;
+            let onay = false;
             for (const i of config.sudoUsers) {
                 if (i === msgId) {
-                    var sudo = true;
-                    var onay = true;
+                    sudo = true;
+                    onay = true;
+                    break;
                 }
             }
-            if (!onay) {
-                if (msgId === BotId) {
-                    var onay = true;
-                }
+            if (!onay && msgId === botid) {
+                onay = true;
+            }
+            if (debug) {
+                console.log(onay);
             }
             if (config.worktype==='public') {
-                const chat = await msg.getChat();
-                const chatId = chat.id._serialized;
                 let response = '●▬▬▬ WhatsIc3zy Public ▬▬▬●\n\n';
                 if (msg.fromMe || config.sudoUsers.includes(msg.from)) {
                     config.plugins.forEach((plugin) => {
@@ -30,8 +42,6 @@ module.exports = {
                 }
             } else if (worktype === 'private') {
                 if (onay) {
-                    const chat = await msg.getChat();
-                    const chatId = chat.id._serialized;
                     let response = '●▬▬▬ WhatsIc3zy Public ▬▬▬●\n\n';
                     if (msg.fromMe || config.sudoUsers.includes(msg.from)) {
                         config.plugins.forEach((plugin) => {

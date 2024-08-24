@@ -5,8 +5,19 @@ module.exports = {
     async onMessage(msg) {
         if (msg.body.trim().toLowerCase() === `${config.prefix}alive`) {
             const BotId = msg.client.info.wid._serialized;
-            const msgId = msg.from;
-
+            var msgId = undefined;
+            const chat = await msg.getChat();
+            const chatId = chat.id._serialized;
+            const aliveMessage = config.aliveMessage || 'Bot is alive!';
+            if (chat.isGroup) {
+                var msgId = msg.id.participant;
+            }
+            else {
+                var msgId = msg.from;
+            }
+            if (debug) {
+                console.log(msgId);
+            }
             if (debug) {
                 console.log(msgId);
             }
@@ -29,11 +40,6 @@ module.exports = {
             if (debug) {
                 console.log(onay);
             }
-
-            const chat = await msg.getChat();
-            const chatId = chat.id._serialized;
-            const aliveMessage = config.aliveMessage || 'Bot is alive!';
-
             if (worktype === 'public') {
                 await msg.client.sendMessage(chatId, aliveMessage);
             } else if (worktype === 'private') {

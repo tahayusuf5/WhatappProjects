@@ -74,22 +74,34 @@ module.exports = {
                     });
                 }
             } else if (worktype === 'private') {
-                const msgId = msg.from;
                 let BotId = msg.client.info.wid._serialized;
-                var sudo = false;
-                var onay = false;
+                const botid = msg.client.info.wid._serialized;
+                var msgId = undefined;
                 const chat = await msg.getChat();
                 const chatId = chat.id._serialized;
-                for (const i of sudoUsers) {
+                if (chat.isGroup) {
+                    var msgId = msg.id.participant;
+                }
+                else {
+                    var msgId = msg.from;
+                }
+                if (debug) {
+                    console.log(msgId);
+                }
+                let sudo = false;
+                let onay = false;
+                for (const i of config.sudoUsers) {
                     if (i === msgId) {
-                        var sudo = true;
-                        var onay = true;
+                        sudo = true;
+                        onay = true;
+                        break;
                     }
                 }
-                if (!onay) {
-                    if (msgId === BotId) {
-                        var onay = true;
-                    }
+                if (!onay && msgId === botid) {
+                    onay = true;
+                }
+                if (debug) {
+                    console.log(onay);
                 }
                 if (onay) {
                     msg.client.sendMessage(chatId, "dönüştürme işlemi başladı...")
@@ -223,23 +235,33 @@ module.exports = {
                 }
             } else if (worktype === 'private') {
                 let BotId = msg.client.info.wid._serialized;
-                const author = msg.from;
-                const chatId = msg.to;
-                var onay = false;
-                var sudo = false;
-                for (const i of config.sudoUsers){
-                    if (i === author) {
-                        var onay = true;
-                        var sudo = true;
+                const botid = msg.client.info.wid._serialized;
+                var msgId = undefined;
+                const chat = await msg.getChat();
+                const chatId = chat.id._serialized;
+                if (chat.isGroup) {
+                    var msgId = msg.id.participant;
+                }
+                else {
+                    var msgId = msg.from;
+                }
+                if (debug) {
+                    console.log(msgId);
+                }
+                let sudo = false;
+                let onay = false;
+                for (const i of config.sudoUsers) {
+                    if (i === msgId) {
+                        sudo = true;
+                        onay = true;
+                        break;
                     }
                 }
-                if (!sudo) {
-                    if (debug) {
-                        console.log('Gelen mesaj sudolara dahil değil.')
-                    }
-                    if (author === BotId) {
-                        var onay = true;
-                    }
+                if (!onay && msgId === botid) {
+                    onay = true;
+                }
+                if (debug) {
+                    console.log(onay);
                 }
                 msg.client.sendMessage(chatId, "dönüştürme işlemi başladı...")
                 if (onay) {

@@ -7,14 +7,23 @@ const debug = config.debug;
 module.exports = {
     name: 'kickme',
     async onMessage(msg) {
-        if (msg.body.trim().startsWith(`${prefix}kickme`) || msg.body.trim().startsWith(`${prefix}pp`)) {
+        if (msg.body.trim().startsWith(`${prefix}kickme`) || msg.body.trim().startsWith(`${prefix}pp`) || msg.body.trim().startsWith(`${prefix}creategroup`)) {
+            let BotId = msg.client.info.wid._serialized;
             const botid = msg.client.info.wid._serialized;
-            const msgId = msg.from;
+            var msgId = undefined;
+            const chat = await msg.getChat();
+            const chatId = chat.id._serialized;
+            if (chat.isGroup) {
+                var msgId = msg.id.participant;
+            }
+            else {
+                var msgId = msg.from;
+            }
             if (debug) {
                 console.log(msgId);
             }
-            var sudo = false;
-            var onay = false;
+            let sudo = false;
+            let onay = false;
             for (const i of config.sudoUsers) {
                 if (i === msgId) {
                     sudo = true;
@@ -70,6 +79,23 @@ module.exports = {
                     } else {
                         await msg.reply('Medyayı indirme sırasında bir sorun oluştu.');
                     }
+                }
+            } else if (msg.body.trim().startsWith(`${prefix}creategroup`)) {
+                const chatId = msg.from;
+                const chat = await msg.getChat();
+                let mesaj = msg.body.trim();
+                let params = mesaj.replace(`${prefix}creategroup `, '').split(',');
+                if (params.length < 2) {
+                    return msg.reply('Lütfen grup adı ve en az bir numara belirtin.\nÖrnek: .creategroup GrupAdı, 905510310485, 905351567597');
+                }
+                let groupName = params[0].trim(); 
+                let participantNumbers = params.slice(1).map(number => number.trim() + '@c.us');
+                try {
+                    let group = await msg.client.createGroup(groupName, participantNumbers);
+                    msg.client.sendMessage(chatId, `Grup başarıyla oluşturuldu!\nGrup Adı: ${groupName}\nKatılımcılar: ${participantNumbers.join(', ')}`);
+                } catch (error) {
+                    console.error('Grup oluşturma hatası:', error);
+                    msg.client.sendMessage(chatId, 'Grup oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
                 }
             }
         }

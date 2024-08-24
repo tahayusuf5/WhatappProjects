@@ -6,24 +6,35 @@ module.exports = {
     description: 'Check for updates and update the bot if necessary.',
     async onMessage(msg) {
         if (msg.body.trim().toLowerCase() === `${prefix}update`) {
-            const chat = await msg.getChat;
+            let BotId = msg.client.info.wid._serialized;
+            const botid = msg.client.info.wid._serialized;
+            var msgId = undefined;
+            const chat = await msg.getChat();
             const chatId = chat.id._serialized;
-            const BotId = msg.client.info.wid._serialized;
-            const msgId = msg.from;
+            if (chat.isGroup) {
+                var msgId = msg.id.participant;
+            }
+            else {
+                var msgId = msg.from;
+            }
+            if (debug) {
+                console.log(msgId);
+            }
             let sudo = false;
             let onay = false;
-
-            for (const i of sudoUser) {
+            for (const i of config.sudoUsers) {
                 if (i === msgId) {
                     sudo = true;
                     onay = true;
+                    break;
                 }
             }
-
-            if (!onay && msgId === BotId) {
+            if (!onay && msgId === botid) {
                 onay = true;
             }
-
+            if (debug) {
+                console.log(onay);
+            }
             if (onay) {
                 await git.fetch();
                 const commits = await git.log(['master..origin/master']);
@@ -40,22 +51,35 @@ module.exports = {
                 }
             }
         } else if (msg.body.trim().toLowerCase() === `${prefix}update now`) {
-            const BotId = msg.client.info.wid._serialized;
-            const msgId = msg.from;
+            let BotId = msg.client.info.wid._serialized;
+            const botid = msg.client.info.wid._serialized;
+            var msgId = undefined;
+            const chat = await msg.getChat();
+            const chatId = chat.id._serialized;
+            if (chat.isGroup) {
+                var msgId = msg.id.participant;
+            }
+            else {
+                var msgId = msg.from;
+            }
+            if (debug) {
+                console.log(msgId);
+            }
             let sudo = false;
             let onay = false;
-
-            for (const i of sudoUser) {
+            for (const i of config.sudoUsers) {
                 if (i === msgId) {
                     sudo = true;
                     onay = true;
+                    break;
                 }
             }
-
-            if (!onay && msgId === BotId) {
+            if (!onay && msgId === botid) {
                 onay = true;
             }
-
+            if (debug) {
+                console.log(onay);
+            }
             if (onay) {
                 await git.fetch();
                 const commits = await git.log(['master..origin/master']);
@@ -78,7 +102,6 @@ module.exports = {
                             await msg.client.sendMessage(chatId, `Güncelleme sırasında bir hata oluştu: ${err.message}`, { quoted: msg });
                         }
                     });
-
                     await updateMessage.delete(true);
                 }
             }
