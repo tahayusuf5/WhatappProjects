@@ -1,15 +1,18 @@
+
 module.exports = {
     name: 'tagadmin',
     async onMessage(msg) {
         if (msg.body.trim().toLowerCase() === `${prefix}tagadmin`) {
             const BotId = msg.client.info.wid._serialized;
             const msgId = msg.from;
+
             if (config.debug) {
                 console.log(`Message from: ${msgId}`);
             }
 
             let sudo = false;
             let onay = false;
+
             for (const i of sudoUsers) {
                 if (i === msgId) {
                     sudo = true;
@@ -30,16 +33,24 @@ module.exports = {
             const chatId = chat.id._serialized;
 
             if (chat.isGroup) {
-                const admins = await chat.getAdministrators();
-                let mentions = admins.map(admin => admin.id._serialized);
-                mentions = mentions.length > 0 ? mentions : [msgId]; 
-                
-                await msg.client.sendMessage(chatId, config.tagMessage, {
-                    mentions: mentions
-                });
+                try {
+                    const participants = await chat.getParticipants();
+                    const admins = participants.filter(participant => participant.isAdmin);
 
-                if (config.debug) {
-                    console.log('Adminler etiketlendi.');
+                    let mentions = admins.map(admin => admin.id._serialized);
+                    mentions = mentions.length > 0 ? mentions : [msgId]; 
+                    
+                    await msg.client.sendMessage(chatId, config.tagMessage, {
+                        mentions: mentions
+                    });
+
+                    if (config.debug) {
+                        console.log('Adminler etiketlendi.');
+                    }
+                } catch (error) {
+                    if (config.debug) {
+                        console.error('Adminleri alırken bir hata oluştu:', error);
+                    }
                 }
             } else {
                 if (config.debug) {
