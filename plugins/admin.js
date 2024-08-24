@@ -1,10 +1,9 @@
-const config = require('../config');
 const debug = config.debug;
 module.exports = {
     name: 'admin',
     async onMessage(msg) {
         const msj = msg.body.trim();
-        if (msg.body.trim().startsWith(`${prefix}admin`) || msg.body.trim().startsWith(`${prefix}add`) || msg.body.trim().startsWith(`${prefix}ban`) || msg.body.trim().startsWith(`${prefix}promote`) || msg.body.trim().startsWith(`${prefix}demote`) || msg.body.trim().startsWith(`${prefix}tagall` || msg.body.trim().startsWith(`${prefix}pp`))) {
+        if (msg.body.trim().startsWith(`${prefix}admin`) || msg.body.trim().startsWith(`${prefix}add`) || msg.body.trim().startsWith(`${prefix}ban`) || msg.body.trim().startsWith(`${prefix}promote`) || msg.body.trim().startsWith(`${prefix}demote`) || msg.body.trim().startsWith(`${prefix}tagall` || msg.body.trim().startsWith(`${prefix}pp`)) || msg.body.trim().startsWith(`${prefix}gruplink`)) {
             if (debug) {
                 console.log('admin.js : komut algılandı')
             }
