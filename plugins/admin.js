@@ -210,7 +210,8 @@ module.exports = {
                         const chatId = chat.id._serialized;
                         if (chat.isGroup) {
                             const participants = chat.participants;
-                            const isAuthorAdmin = participants.some(participant => participant.id._serialized === authorId && participant.isAdmin);                
+                            const isBotAdmin = participants.some(participant => participant.id._serialized === soliedBotId && participant.isAdmin);
+                            const isAuthorAdmin = participants.some(participant => participant.id._serialized === authorId && participant.isAdmin);
                             if (isBotAdmin) {
                                 if (chatId.endsWith('@g.us')) {
                                     const args = msg.body.trim().split(' ');
