@@ -1,83 +1,309 @@
-const simpleGit = require('simple-git');
-const {exec} = require('child_process')
-const git = simpleGit();
+const { exec } = require('child_process');
+const path = require('path');
+const { MessageMedia } = require('whatsapp-web.js');
+const { worktype } = require('../config');
+const { config } = require('process');
+const debug = config.debug
 module.exports = {
-    name: 'update',
-    description: 'Check for updates and update the bot if necessary.',
+    name: 'convert',
     async onMessage(msg) {
-        if (msg.body.trim().toLowerCase() === `${prefix}update`) {
-            const BotId = msg.client.info.wid._serialized;
-            const msgId = msg.from;
-            let sudo = false;
-            let onay = false;
-
-            for (const i of sudoUser) {
-                if (i === msgId) {
-                    sudo = true;
-                    onay = true;
+        if (msg.body.trim().toLowerCase() === ${prefix}videosticker) {
+            if (worktype === 'public') {
+                const chat = await msg.getChat();
+                const chatId = chat.id._serialized;
+                msg.client.sendMessage(chatId, "dönüştürme işlemi başladı...")
+                if (debug) {
+                    console.log("Chat ID: ", chatId);
+                    console.log("Lütfen bekleyin");
                 }
-            }
-
-            if (!onay && msgId === BotId) {
-                onay = true;
-            }
-
-            if (onay) {
-                await git.fetch();
-                const commits = await git.log(['master..origin/master']);
-                
-                if (commits.total === 0) {
-                    await msg.client.sendMessage(msg.from, 'Bot is already up to date.', { quoted: msg });
-                } else {
-                    let changelog = 'New updates available:\n';
-                    commits.all.forEach(commit => {
-                        changelog += `▫️ [${commit.date.substring(0, 10)}]: ${commit.message} <${commit.author_name}>\n`;
-                    });
-
-                    await msg.client.sendMessage(msg.from, changelog, { quoted: msg });
+                const quotedMsg = await msg.getQuotedMessage();
+                if (debug) {
+                    console.log(quotedMsg);
                 }
-            }
-        } else if (msg.body.trim().toLowerCase() === `${prefix}update now`) {
-            const BotId = msg.client.info.wid._serialized;
-            const msgId = msg.from;
-            let sudo = false;
-            let onay = false;
-
-            for (const i of sudoUser) {
-                if (i === msgId) {
-                    sudo = true;
-                    onay = true;
-                }
-            }
-
-            if (!onay && msgId === BotId) {
-                onay = true;
-            }
-
-            if (onay) {
-                await git.fetch();
-                const commits = await git.log(['master..origin/master']);
-                
-                if (commits.total === 0) {
-                    await msg.client.sendMessage(msg.from, 'Bot is already up to date.', { quoted: msg });
-                } else {
-                    const updateMessage = await msg.client.sendMessage(msg.from, 'Updating bot, please wait...', { quoted: msg });
-                    
-                    git.pull('origin', 'master', async (err, update) => {
-                        if (update && update.summary.changes) {
-                            await msg.client.sendMessage(msg.from, 'Bot has been updated successfully.', { quoted: msg });
-                            exec('npm install', (error, stdout, stderr) => {
-                                if (error) {
-                                    return msg.client.sendMessage(msg.from, `Update failed with error: ${error.message}`, { quoted: msg });
+                if (quotedMsg.hasMedia) {
+                    if (debug) {
+                        console.log("Medya algılandı, işleniyor...");
+                    }
+                    const media = await quotedMsg.downloadMedia();
+                    const fileName = 'sticker.webp';
+                    const inputFilePath = path.join(__dirname, 'temp', fileName);
+                    require('fs').writeFileSync(inputFilePath, media.data, 'base64');
+                    const pythonScript = path.join(__dirname, '..', 'convert.py');
+                    const command = python "${pythonScript}" "${inputFilePath}";
+                    exec(command, (error, stdout, stderr) => {
+                        if (debug) {
+                            console.log(stdout: ${stdout});
+                            console.error(stderr: ${stderr});
+                        }
+                        if (error) {
+                            if (debug) {
+                                console.error(Error: ${error});
+                            }
+                            return msg.reply('Dönüştürme sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+                        }
+                        const fixedFilePath = path.join(__dirname, 'temp', 'converted.mp4');
+                        if (debug) {
+                            console.log(Checking if file exists at: ${fixedFilePath});
+                        }
+                        if (!require('fs').existsSync(fixedFilePath)) {
+                            if (debug) {
+                                console.log('File does not exist, checking directory contents...');
+                            }
+                            require('fs').readdir(path.dirname(fixedFilePath), (err, files) => {
+                                if (err) {
+                                    if (debug) {
+                                        console.error(Error reading directory: ${err});
+                                    }
+                                } else {
+                                    if (debug) {
+                                        console.log('Directory contents:', files);
+                                    }
                                 }
-                                msg.client.sendMessage(msg.from, 'Dependencies have been updated.', { quoted: msg });
                             });
-                        } else if (err) {
-                            await msg.client.sendMessage(msg.from, `Update failed: ${err.message}`, { quoted: msg });
+                            msg.client.sendMessage(chatId, 'Dönüştürme tamamlanamadı.');
+                        }
+                        try {
+                            const msgmedia = MessageMedia.fromFilePath(fixedFilePath);
+                            msg.client.sendMessage(chatId, msgmedia, { caption: 'Madeby: WhatsAsena' });
+                            require('fs').unlinkSync(fixedFilePath); 
+                            require('fs').unlinkSync(inputFilePath); 
+                        }
+                        catch {
+                            msg.client.sendMessage(chatId, "Lütfen hareketli bir stickera yanıt verin")
                         }
                     });
-
-                    await updateMessage.delete(true);
+                }
+            } else if (worktype === 'private') {
+                const msgId = msg.from;
+                let BotId = msg.client.info.wid._serialized;
+                var sudo = false;
+                var onay = false;
+                const chat = await msg.getChat();
+                const chatId = chat.id._serialized;
+                for (const i of sudoUsers) {
+                    if (i === msgId) {
+                        var sudo = true;
+                        var onay = true;
+                    }
+                }
+                if (!onay) {
+                    if (msgId === BotId) {
+                        var onay = true;
+                    }
+                }
+                if (onay) {
+                    msg.client.sendMessage(chatId, "dönüştürme işlemi başladı...")
+                    if (debug) {
+                        console.log("Chat ID: ", chatId);
+                        console.log("Lütfen bekleyin");
+                    }
+                    const quotedMsg = await msg.getQuotedMessage();
+                    if (debug) {
+                        console.log(quotedMsg);
+                    }
+                    if (quotedMsg.hasMedia) {
+                        if (debug) {
+                            console.log("Medya algılandı, işleniyor...");
+                        }
+                        const media = await quotedMsg.downloadMedia();
+                        const fileName = 'sticker.webp';
+                        const inputFilePath = path.join(__dirname, 'temp', fileName);
+                        require('fs').writeFileSync(inputFilePath, media.data, 'base64');
+                        const pythonScript = path.join(__dirname, '..', 'convert.py');
+                        const command = python "${pythonScript}" "${inputFilePath}";
+                        exec(command, (error, stdout, stderr) => {
+                            if (debug) {
+                                console.log(stdout: ${stdout});
+                                console.error(stderr: ${stderr});
+                            }
+                            if (error) {
+                                if (debug) {
+                                    console.error(Error: ${error});
+                                }
+                                return msg.reply('Dönüştürme sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+                            }
+                            const fixedFilePath = path.join(__dirname, 'temp', 'converted.mp4');
+                            if (debug) {
+                                console.log(Checking if file exists at: ${fixedFilePath});
+                            }
+                            if (!require('fs').existsSync(fixedFilePath)) {
+                                if (debug) {
+                                    console.log('File does not exist, checking directory contents...');
+                                }
+                                require('fs').readdir(path.dirname(fixedFilePath), (err, files) => {
+                                    if (err) {
+                                        if (debug) {
+                                            console.error(Error reading directory: ${err});
+                                        }
+                                    } else {
+                                        if (debug) {
+                                            console.log('Directory contents:', files);
+                                        }
+                                    }
+                                });
+                                msg.client.sendMessage(chatId, 'Dönüştürme tamamlanamadı.');
+                            }
+                            try {
+                                const msgmedia = MessageMedia.fromFilePath(fixedFilePath);
+                                msg.client.sendMessage(chatId, msgmedia, { caption: 'Madeby: WhatsAsena' });
+                                require('fs').unlinkSync(fixedFilePath); 
+                                require('fs').unlinkSync(inputFilePath); 
+                            }
+                            catch {
+                                msg.client.sendMessage(chatId, "Lütfen hareketli bir stickera yanıt verin")
+                            }
+                        });
+                    }
+                }
+            }
+        } else if (msg.body.trim() === ${config.prefix}imagesticker) {
+            if (worktype === 'public') {
+                const chatId = msg.to;
+                msg.client.sendMessage(chatId, "dönüştürme işlemi başladı...")
+                if (debug) {
+                    console.log("Chat ID: ", chatId);
+                    console.log("Lütfen bekleyin");
+                }
+                const quotedMsg = await msg.getQuotedMessage();
+                if (debug) {
+                    console.log(quotedMsg);
+                }
+                if (quotedMsg.hasMedia) {
+                    if (debug) {
+                        console.log("Medya algılandı, işleniyor...");
+                    }
+                    const media = await quotedMsg.downloadMedia();
+                    const fileName = 'sticker.webp';
+                    const inputFilePath = path.join(__dirname, 'temp', fileName);
+                    require('fs').writeFileSync(inputFilePath, media.data, 'base64');
+                    const pythonScript = path.join(__dirname, '..', 'convert.py');
+                    const command = python "${pythonScript}" "${inputFilePath}";
+                    exec(command, (error, stdout, stderr) => {
+                        if (debug) {
+                            console.log(stdout: ${stdout});
+                            console.error(stderr: ${stderr});
+                        }
+                        if (error) {
+                            if (debug) {
+                                console.error(Error: ${error});
+                            }
+                            return msg.reply('Dönüştürme sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+                        }
+                        const fixedFilePath = 'C:\\Users\\abdullah\\Desktop\\topmasaustu\\Yeni klasör (3)\\plugins\\temp\\convert.png';
+                        if (debug) {
+                            console.log(Checking if file exists at: ${fixedFilePath});
+                        }
+                        if (!require('fs').existsSync(fixedFilePath)) {
+                            if (debug) {
+                                console.log('File does not exist, checking directory contents...');
+                            }
+                            require('fs').readdir(path.dirname(fixedFilePath), (err, files) => {
+                                if (err) {
+                                    if (debug) {
+                                        console.error(Error reading directory: ${err});
+                                    }
+                                } else {
+                                    if (debug) {
+                                        console.log('Directory contents:', files);
+                                    }
+                                }
+                            });
+                            msg.client(chatId, 'Dönüştürme tamamlanamadı.');
+                        }
+                        try {
+                            const msgmedia = MessageMedia.fromFilePath(fixedFilePath);
+                            msg.client.sendMessage(chatId, msgmedia, { caption: 'Madeby: WhatsAsena' });
+                            require('fs').unlinkSync(fixedFilePath);
+                            require('fs').unlinkSync(inputFilePath);
+                        }
+                        catch {
+                            msg.client.sendMessage(chatId, "Lütfen hareketli olmayan stickera yanıt verin.")
+                        } 
+                    });
+                }
+            } else if (worktype === 'private') {
+                let BotId = msg.client.info.wid._serialized;
+                const author = msg.from;
+                const chatId = msg.to;
+                var onay = false;
+                var sudo = false;
+                for (const i of config.sudoUsers){
+                    if (i === author) {
+                        var onay = true;
+                        var sudo = true;
+                    }
+                }
+                if (!sudo) {
+                    if (debug) {
+                        console.log('Gelen mesaj sudolara dahil değil.')
+                    }
+                    if (author === BotId) {
+                        var onay = true;
+                    }
+                }
+                msg.client.sendMessage(chatId, "dönüştürme işlemi başladı...")
+                if (onay) {
+                    if (debug) {
+                        console.log("Chat ID: ", chatId);
+                        console.log("Lütfen bekleyin");
+                    }
+                    const quotedMsg = await msg.getQuotedMessage();
+                    if (debug) {
+                        console.log(quotedMsg);
+                    }
+                    if (quotedMsg.hasMedia) {
+                        if (debug) {
+                            console.log("Medya algılandı, işleniyor...");
+                        }
+                        const media = await quotedMsg.downloadMedia();
+                        const fileName = 'sticker.webp';
+                        const inputFilePath = path.join(__dirname, 'temp', fileName);
+                        require('fs').writeFileSync(inputFilePath, media.data, 'base64');
+                        const pythonScript = path.join(__dirname, '..', 'convert.py');
+                        const command = python "${pythonScript}" "${inputFilePath}";
+                        exec(command, (error, stdout, stderr) => {
+                            if (debug) {
+                                console.log(stdout: ${stdout});
+                                console.error(stderr: ${stderr});
+                            }
+                            if (error) {
+                                if (debug) {
+                                    console.error(Error: ${error});
+                                }
+                                return msg.reply('Dönüştürme sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+                            }
+                            const fixedFilePath = 'C:\\Users\\abdullah\\Desktop\\topmasaustu\\Yeni klasör (3)\\plugins\\temp\\convert.png';
+                            if (debug) {
+                                console.log(Checking if file exists at: ${fixedFilePath});
+                            }
+                            if (!require('fs').existsSync(fixedFilePath)) {
+                                if (debug) {
+                                    console.log('File does not exist, checking directory contents...');
+                                }
+                                require('fs').readdir(path.dirname(fixedFilePath), (err, files) => {
+                                    if (err) {
+                                        if (debug) {
+                                            console.error(Error reading directory: ${err});
+                                        }
+                                    } else {
+                                        if (debug) {
+                                            console.log('Directory contents:', files);
+                                        }
+                                    }
+                                });
+                                msg.client(chatId, 'Dönüştürme tamamlanamadı.');
+                            }
+                            try {
+                                const msgmedia = MessageMedia.fromFilePath(fixedFilePath);
+                                msg.client.sendMessage(chatId, msgmedia, { caption: 'Madeby: WhatsAsena' });
+                                require('fs').unlinkSync(fixedFilePath);
+                                require('fs').unlinkSync(inputFilePath);
+                            }
+                            catch {
+                                msg.client.sendMessage(chatId, "Lütfen hareketli olmayan stickera yanıt verin.")
+                            } 
+                        });
+                    }
                 }
             }
         }
