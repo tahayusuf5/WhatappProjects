@@ -485,67 +485,73 @@ module.exports = {
                 }
             } else if (msg.body.trim().toLowerCase() === `${prefix}tagall`) {
                 if (worktype === 'public') {
-                    if (onay) {
+                    if (isBotAdmin || bypassAdminCheck) {
                         const chat = await msg.getChat();
                         const chatId = chat.id._serialized;
                         if (chat.isGroup) {
                             const participants = chat.participants;
-                            const isAuthorAdmin = participants.some(participant => participant.id._serialized === authorId && participant.isAdmin);
-                            if (isAuthorAdmin) {
-                                let message = '';
-                                let mentions = [];
-                                for (let i = 0; i < participants.length; i++) {
-                                    const participant = participants[i];
+                            let message = '';
+                            let mentions = [];
+                            for (let i = 0; i < participants.length; i++) {
+                                const participant = participants[i];
+                                if (participant.isAdmin) {
                                     const contactId = participant.id._serialized;
                                     message += `• @${participant.id.user}`;
                                     if (i < participants.length - 1) {
                                         message += '\n'; 
                                     }
-
                                     mentions.push(await msg.client.getContactById(contactId));
                                 }
-
-                                await msg.client.sendMessage(chatId, message, {
+                            }
+                            if (messageContent) {
+                                await msg.client.sendMessage(chatId, messageContent, {
                                     mentions: mentions
                                 });
                             } else {
-                                await msg.client.sendMessage(msg.from, 'Bu komut sadece grup sohbetlerinde kullanılabilir.');
-
+                                await msg.client.sendMessage(chatId, message, {
+                                    mentions: mentions
+                                });
                             }
                         } else {
-                            await msg.client.sendMessage(chatId, 'Bu komutu kullanabilmeniz için botun admin olması gerekmektedir.')
+                            await msg.client.sendMessage(chatId, 'Bu komut sadece grup sohbetlerinde kullanılabilir.');
                         }
+                    } else {
+                        await msg.client.sendMessage(msg.from, 'Bu komutu kullanabilmeniz için botun admin olması gerekmektedir.');
                     }
                 } else if (worktype === 'private'){
                     if (onay) {
-                        const chat = await msg.getChat();
-                        const chatId = chat.id._serialized;
-                        if (chat.isGroup) {
-                            const participants = chat.participants;
-                            const isAuthorAdmin = participants.some(participant => participant.id._serialized === authorId && participant.isAdmin);            
-                            if (isAuthorAdmin) {
+                        if (isBotAdmin || bypassAdminCheck) {
+                            const chat = await msg.getChat();
+                            const chatId = chat.id._serialized;
+                            if (chat.isGroup) {
+                                const participants = chat.participants;
                                 let message = '';
                                 let mentions = [];
                                 for (let i = 0; i < participants.length; i++) {
                                     const participant = participants[i];
-                                    const contactId = participant.id._serialized;
-                                    message += `• @${participant.id.user}`;
-                                    if (i < participants.length - 1) {
-                                        message += '\n'; 
+                                    if (participant.isAdmin) {
+                                        const contactId = participant.id._serialized;
+                                        message += `• @${participant.id.user}`;
+                                        if (i < participants.length - 1) {
+                                            message += '\n'; 
+                                        }
+                                        mentions.push(await msg.client.getContactById(contactId));
                                     }
-    
-                                    mentions.push(await msg.client.getContactById(contactId));
                                 }
-    
-                                await msg.client.sendMessage(chatId, message, {
-                                    mentions: mentions
-                                });
+                                if (messageContent) {
+                                    await msg.client.sendMessage(chatId, messageContent, {
+                                        mentions: mentions
+                                    });
+                                } else {
+                                    await msg.client.sendMessage(chatId, message, {
+                                        mentions: mentions
+                                    });
+                                }
                             } else {
-                                await msg.client.sendMessage(msg.from, 'Bu komut sadece grup sohbetlerinde kullanılabilir.');
-    
+                                await msg.client.sendMessage(chatId, 'Bu komut sadece grup sohbetlerinde kullanılabilir.');
                             }
                         } else {
-                            await msg.client.sendMessage(chatId, 'Bu komutu kullanabilmeniz için botun admin olması gerekmektedir.')
+                            await msg.client.sendMessage(msg.from, 'Bu komutu kullanabilmeniz için botun admin olması gerekmektedir.');
                         }
                     }
                 }
