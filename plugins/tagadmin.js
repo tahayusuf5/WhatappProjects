@@ -33,8 +33,6 @@ module.exports = {
             if (debug) {
                 console.log(onay);
             }
-            const chat = await msg.getChat();
-            const chatId = chat.id._serialized;
             if (chat.isGroup) {
                 if (onay) {
                     const participants = chat.participants;
