@@ -1,6 +1,7 @@
 const simpleGit = require('simple-git');
 const {exec} = require('child_process')
 const git = simpleGit();
+const debug = config.debug;
 module.exports = {
     name: 'update',
     description: 'Check for updates and update the bot if necessary.',
