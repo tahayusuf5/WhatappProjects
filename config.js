@@ -30,7 +30,7 @@ module.exports = {
         { name: 'update', description: 'Bota update gelip gelmediğini kontrol eder.' },
         { name: 'update now', description: 'Eğer update gelmiş ise updte etmek için kullanılır.' },
         { name: 'afk', description: 'Sizi afk yapar. Afk yazdıktan sonra argüman vermez iseniz main afk mesajını kullanacaktır. Örnek: .afk Şu anda afkyım // yada .afk' },
-        { name: 'blockk', description: 'Yanıt verdiğiniz, etiketlediğiniz veya yazdığınız chatteki kullanıcıyı engeller.' },
+        { name: 'block', description: 'Yanıt verdiğiniz, etiketlediğiniz veya yazdığınız chatteki kullanıcıyı engeller.' },
         { name: 'unblock', description: 'Yanıt verdiğiniz veya etiketlediğiniz kullanıcının engelini kaldırır.' },
         { name: 'pmsend', description: 'Yanıt verdiğiniz veya etiketlediğiniz kullanıcıya özelden mesaj gönderir. Örnek: .pmsend @Ic3zy Selamın Aleyküm.' }
     ]
