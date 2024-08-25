@@ -81,21 +81,23 @@ module.exports = {
                     }
                 }
             } else if (msg.body.trim().startsWith(`${prefix}creategroup`)) {
-                const chatId = msg.from;
-                const chat = await msg.getChat();
-                let mesaj = msg.body.trim();
-                let params = mesaj.replace(`${prefix}creategroup `, '').split(',');
-                if (params.length < 2) {
-                    return msg.reply('Lütfen grup adı ve en az bir numara belirtin.\nÖrnek: .creategroup GrupAdı, 905510310485, 905351567597');
-                }
-                let groupName = params[0].trim(); 
-                let participantNumbers = params.slice(1).map(number => number.trim() + '@c.us');
-                try {
-                    let group = await msg.client.createGroup(groupName, participantNumbers);
-                    msg.client.sendMessage(chatId, `Grup başarıyla oluşturuldu!\nGrup Adı: ${groupName}\nKatılımcılar: ${participantNumbers.join(', ')}`);
-                } catch (error) {
-                    console.error('Grup oluşturma hatası:', error);
-                    msg.client.sendMessage(chatId, 'Grup oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+                    if (onay) {
+                    const chat = await msg.getChat();
+                    const chatId = chat.id._serialized;
+                    let mesaj = msg.body.trim();
+                    let params = mesaj.replace(`${prefix}creategroup `, '').split(',');
+                    if (params.length < 2) {
+                        return msg.reply('Lütfen grup adı ve en az bir numara belirtin.\nÖrnek: .creategroup GrupAdı, 905510310485, 905351567597');
+                    }
+                    let groupName = params[0].trim(); 
+                    let participantNumbers = params.slice(1).map(number => number.trim() + '@c.us');
+                    try {
+                        let group = await msg.client.createGroup(groupName, participantNumbers);
+                        msg.client.sendMessage(chatId, `Grup başarıyla oluşturuldu!\nGrup Adı: ${groupName}\nKatılımcılar: ${participantNumbers.join(', ')}`);
+                    } catch (error) {
+                        console.error('Grup oluşturma hatası:', error);
+                        msg.client.sendMessage(chatId, 'Grup oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+                    }
                 }
             }
         }
