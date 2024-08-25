@@ -2,7 +2,7 @@ module.exports = {
     worktype: 'private', // public || private
     prefix: '.',
     aliveMessage: `Tanrı Türk'ü Korusun. 🐺 Asena Hizmetinde!\n\n*Version:* 0.0.2 Public Beta\n*Branch:* Beta\n*Telegram Group:* https://t.me/AsenaSupport\n*Telegram Channel:* https://t.me/asenaremaster`,
-    sudoUsers: ['905355121175@c.us'], // Numaranızın sonuna  @c.us eklmelisiniz
+    sudoUsers: ['9055xxxxxxxx@c.us', '9055xxxxxxxx@c.us'], // Numaranızın sonuna  @c.us eklmelisiniz
     botNumber: `905510310485@c.us`,
     kickmeMessage: `Elveda ben kaçar.`, // Kickme mesajıdır.
     debug: true, // Geliştiricilere özeldir. true || false
