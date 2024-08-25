@@ -109,6 +109,7 @@ module.exports = {
                         if (chat.isGroup) {
                             const participants = chat.participants;
                             const isAuthorAdmin = participants.some(participant => participant.id._serialized === authorId && participant.isAdmin);                
+                            const isBotAdmin = participants.some(participant => participant.id._serialized === soliedBotId && participant.isAdmin);
                             if (isBotAdmin) {
                                 if (chatId.endsWith('@g.us')) {
                                     if (msg.hasQuotedMsg) {
@@ -118,8 +119,13 @@ module.exports = {
                                             console.log(`Yanıtlanan kullanıcı ID: ${quotedUserId}`);
                                         }
                                         if (quotedUserId) {
-                                            const result = await removeUser(chat, quotedUserId);
-                                            await msg.client.sendMessage(chatId, result ? 'Kullanıcı yasaklandı!' : 'Kullanıcıyı yasaklama başarısız oldu.');
+                                            try {
+                                                const result = await removeUser(chat, quotedUserId);
+                                                await msg.client.sendMessage(chatId, result ? 'Kullanıcı yasaklandı!' : 'Kullanıcıyı yasaklama başarısız oldu.');
+                                            } catch (error) {
+                                                msg.client.sendMessage(chatId, 'Banlama sırasında bir hata oluştu hata:', error);
+                                            }
+                                            
                                         } else {
                                             await msg.client.sendMessage(chatId, 'Yanıtlanan mesajdaki kullanıcı ID\'si bulunamadı.');
                                         }
@@ -135,8 +141,11 @@ module.exports = {
                                                 console.log(`Yasaklanacak kullanıcı ID: ${formattedUserId}`);
                                             }
                                             if (formattedUserId) {
-                                                const result = await removeUser(chat, formattedUserId);
-                                                await msg.client.sendMessage(chatId, result ? 'Kullanıcı yasaklandı!' : 'Kullanıcıyı yasaklama başarısız oldu.');
+                                                try {
+                                                    const result = await removeUser(chat, formattedUserId);
+                                                    await msg.client.sendMessage(chatId, result ? 'Kullanıcı yasaklandı!' : 'Kullanıcıyı yasaklama başarısız oldu.');
+                                                } catch (error) {
+                                                    msg.client.sendMessagr(chatId, 'Banlama sırasında bir hata oluştu hata:', error);
                                             } else {
                                                 await msg.client.sendMessage(chatId, 'Kullanıcı ID\'si sağlanamadı.');
                                             }
