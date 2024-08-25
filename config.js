@@ -1,9 +1,8 @@
 module.exports = {
-    worktype: 'private', // public || private
+    worktype: 'public', // public || private
     prefix: '.',
     aliveMessage: `Tanrı Türk'ü Korusun. 🐺 Asena Hizmetinde!\n\n*Version:* 0.0.2 Public Beta\n*Branch:* Beta\n*Telegram Group:* https://t.me/AsenaSupport\n*Telegram Channel:* https://t.me/asenaremaster`,
-    sudoUsers: ['9055xxxxxxxx@c.us', '9055xxxxxxxx@c.us'], // Numaranızın sonuna  @c.us eklmelisiniz
-    botNumber: `905510310485@c.us`,
+    sudoUsers: ['9055xxxxxxxx@c.us'], // Numaranızın sonuna  @c.us eklmelisiniz
     kickmeMessage: `Elveda ben kaçar.`, // Kickme mesajıdır.
     debug: true, // Geliştiricilere özeldir. true || false
     chromepath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe', // bilgisayarınızda chrome kurulu değil ise boş bırakınız.
@@ -30,6 +29,9 @@ module.exports = {
         { name: 'setvar_prefix', description: 'Prefixinizi güncellemenizi sağlar. örn: .setvar_prefix !' },
         { name: 'update', description: 'Bota update gelip gelmediğini kontrol eder.' },
         { name: 'update now', description: 'Eğer update gelmiş ise updte etmek için kullanılır.' },
-        { name: 'afk', description: 'Sizi afk yapar. Afk yazdıktan sonra argüman vermez iseniz main afk mesajını kullanacaktır. Örnek: .afk Şu anda afkyım // yada .afk' }
+        { name: 'afk', description: 'Sizi afk yapar. Afk yazdıktan sonra argüman vermez iseniz main afk mesajını kullanacaktır. Örnek: .afk Şu anda afkyım // yada .afk' },
+        { name: 'blockk', description: 'Yanıt verdiğiniz, etiketlediğiniz veya yazdığınız chatteki kullanıcıyı engeller.' },
+        { name: 'unblock', description: 'Yanıt verdiğiniz veya etiketlediğiniz kullanıcının engelini kaldırır.' },
+        { name: 'pmsend', description: 'Yanıt verdiğiniz veya etiketlediğiniz kullanıcıya özelden mesaj gönderir. Örnek: .pmsend @Ic3zy Selamın Aleyküm.' }
     ]
 };

@@ -168,7 +168,7 @@ module.exports = {
                     }
                 }
             }
-        } else if (msg.body.trim() === `${config.prefix}imagesticker`) {
+        } else if (msg.body.trim() === `${prefix}imagesticker`) {
             if (worktype === 'public') {
                 const chatId = msg.to;
                 msg.client.sendMessage(chatId, "dönüştürme işlemi başladı...")
@@ -313,7 +313,7 @@ module.exports = {
                                         }
                                     }
                                 });
-                                msg.client(chatId, 'Dönüştürme tamamlanamadı.');
+                                msg.client.sendMessage(chatId, 'Dönüştürme tamamlanamadı.');
                             }
                             try {
                                 const msgmedia = MessageMedia.fromFilePath(fixedFilePath);

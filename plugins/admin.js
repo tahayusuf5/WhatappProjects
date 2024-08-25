@@ -7,51 +7,49 @@ module.exports = {
             if (debug) {
                 console.log('admin.js : komut algılandı')
             }
+            var chat = await msg.getChat();
             let soliedBotId = msg.client.info.wid._serialized;
             let botId = soliedBotId.replace("@c.us", "");
-            const sudoUsers = config.sudoUsers;
-            let authorId2 = msg.author || msg.from;
-            if (authorId2.includes(':')) {
-                authorId2 = authorId2.split(':')[0];
+            var BotId = msg.client.info.wid._serialized;
+            var msgId = undefined;
+            var chat = await msg.getChat();
+            var chatId = chat.id._serialized;
+            var aliveMessage = config.aliveMessage || 'Bot is alive!';
+            if (chat.isGroup) {
+                var msgId = msg.id.participant;
             }
-            if (botId.includes(':')) {
-                botId = botId.split(':')[0];
+            else {
+                var msgId = msg.from;
             }
-            let authorId = `${authorId2}`
-            if (debug) {
-                console.log(`Author ID: ${authorId}`);
-                console.log(`Bot ID: ${botId}`);
-            }
-            // if (!sudoUsers.includes(authorId) && authorId !== botId) {
-            //     console.log('Yetkisiz kullanıcı. Komut işlenmedi.');
-            //     return;
-            // }
-            const botid = msg.client.info.wid._serialized;
-            const msgId = msg.from;
             if (debug) {
                 console.log(msgId);
             }
-            var sudo = false;
-            var onay = false;
-            for (const i of config.sudoUsers) {
+            if (debug) {
+                console.log(msgId);
+            }
+
+            let sudo = false;
+            let onay = false;
+
+            for (const i of sudoUsers) {
                 if (i === msgId) {
                     sudo = true;
                     onay = true;
                     break;
                 }
             }
-            if (!onay && msgId === botid) {
+
+            if (!onay && msgId === BotId) {
                 onay = true;
             }
+
             if (debug) {
                 console.log(onay);
             }
-
             if (msg.body.trim().toLowerCase() === `${prefix}admin`) {
                 if (worktype === 'public') {
                     if (onay) {
                         const chat = await msg.getChat();
-                        const chatId = chat.id._serialized;
                         if (chat.isGroup) {
                             const chat = await msg.getChat();
                             const chatId = chat.id._serialized;
@@ -108,7 +106,6 @@ module.exports = {
                         const chatId = chat.id._serialized;
                         if (chat.isGroup) {
                             const participants = chat.participants;
-                            const isAuthorAdmin = participants.some(participant => participant.id._serialized === authorId && participant.isAdmin);                
                             const isBotAdmin = participants.some(participant => participant.id._serialized === soliedBotId && participant.isAdmin);
                             if (isBotAdmin) {
                                 if (chatId.endsWith('@g.us')) {
@@ -221,7 +218,7 @@ module.exports = {
                         if (chat.isGroup) {
                             const participants = chat.participants;
                             const isBotAdmin = participants.some(participant => participant.id._serialized === soliedBotId && participant.isAdmin);
-                            const isAuthorAdmin = participants.some(participant => participant.id._serialized === authorId && participant.isAdmin);
+ 
                             if (isBotAdmin) {
                                 if (chatId.endsWith('@g.us')) {
                                     const args = msg.body.trim().split(' ');
@@ -588,27 +585,7 @@ module.exports = {
                         await msg.client.sendMessage(chatId, 'Bu komut sadece grup sohbetlerinde kullanılabilir.');
                     }
                 } else if (worktype === 'private') {
-                    const botid = msg.client.info.wid._serialized;
-                    const msgId = msg.from;
-                    if (debug) {
-                        console.log(msgId);
-                    }
-                    var sudo = false;
-                    var onay = false;
-                    for (const i of config.sudoUsers) {
-                        if (i === msgId) {
-                            sudo = true;
-                            onay = true;
-                            break;
-                        }
-                    }
-                    if (!onay && msgId === botid) {
-                        onay = true;
-                    }
-                    if (debug) {
-                        console.log(onay);
-                    }
-                    if (onay) {
+                        if (onay) {
                         const chat = await msg.getChat();
                         const chatId = chat.id._serialized;
                         if (chat.isGroup) {

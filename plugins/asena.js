@@ -34,13 +34,11 @@ module.exports = {
             }
             if (config.worktype==='public') {
                 let response = '●▬▬▬ WhatsIc3zy Public ▬▬▬●\n\n';
-                if (msg.fromMe || config.sudoUsers.includes(msg.from)) {
-                    config.plugins.forEach((plugin) => {
-                        if (plugin.dontAddCommandList || !plugin.name) return;
-                        response += `*🛠: ${plugin.name}*\n💬: ${plugin.description}\n`;
-                    });
-                    msg.client.sendMessage(chatId, response);
-                }
+                config.plugins.forEach((plugin) => {
+                    if (plugin.dontAddCommandList || !plugin.name) return;
+                    response += `*🛠: ${plugin.name}*\n💬: ${plugin.description}\n`;
+                });
+                msg.client.sendMessage(chatId, response);
             } else if (worktype === 'private') {
                 if (onay) {
                     let response = '●▬▬▬ WhatsIc3zy Public ▬▬▬●\n\n';
