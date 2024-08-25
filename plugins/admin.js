@@ -146,6 +146,7 @@ module.exports = {
                                                     await msg.client.sendMessage(chatId, result ? 'Kullanıcı yasaklandı!' : 'Kullanıcıyı yasaklama başarısız oldu.');
                                                 } catch (error) {
                                                     msg.client.sendMessagr(chatId, 'Banlama sırasında bir hata oluştu hata:', error);
+                                                }
                                             } else {
                                                 await msg.client.sendMessage(chatId, 'Kullanıcı ID\'si sağlanamadı.');
                                             }
