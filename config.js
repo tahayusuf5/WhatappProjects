@@ -1,7 +1,7 @@
 module.exports = {
     worktype: 'public', // public || private
     prefix: '.',
-    aliveMessage: `Tanrı Türk'ü Korusun. 🐺 Asena Hizmetinde!\n\n*Version:* 0.0.2 Public Beta\n*Branch:* Beta\n*Telegram Group:* https://t.me/AsenaSupport\n*Telegram Channel:* https://t.me/asenaremaster`,
+    aliveMessage: 'Tanrı Türkü Korusun. 🐺 Asena Hizmetinde!\n\n*Version:* 0.0.2 Public Beta\n*Branch:* Beta\n*Telegram Group:* https://t.me/AsenaSupport\n*Telegram Channel:* https://t.me/asenaremaster',
     sudoUsers: ['9055xxxxxxxx@c.us'], // Numaranızın sonuna  @c.us eklmelisiniz
     kickmeMessage: `Elveda ben kaçar.`, // Kickme mesajıdır.
     debug: true, // Geliştiricilere özeldir. true || false
