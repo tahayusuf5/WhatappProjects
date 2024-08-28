@@ -33,7 +33,7 @@ module.exports = {
                 console.log(onay);
             }
             if (config.worktype==='public') {
-                let response = '●▬▬▬ WhatsIc3zy Public ▬▬▬●\n\n';
+                let response = '●▬▬▬ Ic3zybots Public ▬▬▬●\n\n';
                 config.plugins.forEach((plugin) => {
                     if (plugin.dontAddCommandList || !plugin.name) return;
                     response += `*🛠: ${plugin.name}*\n💬: ${plugin.description}\n`;
@@ -41,7 +41,7 @@ module.exports = {
                 msg.client.sendMessage(chatId, response);
             } else if (worktype === 'private') {
                 if (onay) {
-                    let response = '●▬▬▬ WhatsIc3zy Public ▬▬▬●\n\n';
+                    let response = '●▬▬▬ Ic3zybots Public ▬▬▬●\n\n';
                     if (msg.fromMe || config.sudoUsers.includes(msg.from)) {
                         config.plugins.forEach((plugin) => {
                             if (plugin.dontAddCommandList || !plugin.name) return;
