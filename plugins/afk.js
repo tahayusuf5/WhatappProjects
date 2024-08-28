@@ -1,6 +1,6 @@
 
 let isafk = false;
-let afkmsg = `Şu anda AFK'yım. Merak etme bu bir bot otomasyon mesajıdır.`;
+let afkmsg = `Bu mesaj AFK olduğumun kanıtıdır.`;
 const debug = config.debug;
 module.exports = {
     async onMessage(msg) {
@@ -39,7 +39,7 @@ module.exports = {
                     const girdi = msg.body.trim();
                     afkmsg = girdi.replace(`${prefix}afk`, '').trim(); 
                     if (!afkmsg) { 
-                        afkmsg = `Şu anda AFK'yım. Merak etme bu bir bot otomasyon mesajıdır.`;
+                        afkmsg = `Bu mesaj AFK olduğumun kanıtıdır.`;
                     }
                 } catch (error) {
                     console.log(error);
@@ -83,7 +83,7 @@ module.exports = {
                 if (onay) {
                     if (isafk) {
                         isafk = false;
-                        msg.client.sendMessage(chatId, 'Artık afk değilim!!');
+                        msg.client.sendMessage(chatId, 'Yeni Değil Geri Geldim!!');
                     }
                 } else {
                     msg.client.sendMessage(chatId, afkmsg);
